@@ -1,7 +1,9 @@
 <?php if ( !defined('BASE_DIR') ) exit('No direct script access allowed');
 
 	/**
-	 * Error handling class
+	 * error.php
+	 *
+	 * Error handler class
 	 *
 	 * @package core
 	 * @version 1.0
@@ -33,16 +35,14 @@
 		 */
 		public function display_error($title, $msg, $tpl = 'general', $error_code = 500) {
 			/* Set the site status to the latest error */
-				load_class("output", "core")->setStatusHeader($error_code);
+				load_class("output", "core")->set_status_header($error_code);
 
 			/* Implode the error message(s) */
 				$msg = '<p>'.implode('</p><p>', !is_array($msg) ? array($msg) : $msg).'</p>';
 
-
 			/* Flush previous ob layers */
 				if (ob_get_level() > $this->_ob_level + 1)
 					ob_end_flush();
-
 
 			/* Use buffered output to echo the error */
 				$file = SYSTEM_TEMPLATE.$tpl.'.error.php';

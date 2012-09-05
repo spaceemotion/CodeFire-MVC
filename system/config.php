@@ -19,15 +19,23 @@
 		$config["site"]["title"] = "";
 		$config["site"]["userclass_prefix"] = "";
 
-		$config["site"]["enable_cache"] = true;
-
-		// Custom cache path, leave null for default
-		$config["site"]["cache_path"] = null;
-
 		$config["site"]["default_template"] = "default";
 
 		// If true an error page will be displayed when no output was sent
 		$config["site"]["nocontent404"] = true;
+
+
+	/* Cache configuration */
+		$config["cache"]["enabled"] = true;
+		$config["cache"]["directory"] = TEMP_CACHE;
+
+		// Cache time in minutes
+		$config["cache"]["time"] = 0.1;
+
+		// Cache levels:
+		// 1: Save only sent data (template will be rerendered),
+		// 2: Complete site (complete output to the browser)
+		$config["cache"]["level"] = 1;
 
 
 	/* Routing */

@@ -11,16 +11,18 @@
 		}
 
 		function index() {
+			$this->template->set_title("Demo site");
+
 			$data = "<h1>CodeFire Demo content</h1>";
 			$data .= $this->demo_model->display_demo();
-			$data .= "Page generated in {{ELAPSED_TIME}} seconds";
+			$data .= "Page generated in {{ELAPSED_TIME}} seconds; ".  getConfigItem("site.request_url");
 
 			$this->template->write(null, $data);
 		}
 
 		function no_template($request = "") {
 			// DEMO OUTPUT WITHOUT TEMPLATE
-			echo "<h1>Request handler</h1>";
+			echo "<h1>Request demo</h1>";
 			echo $this->demo_model->display_demo();
 
 			echo "You requested $request<br />Page generated in {{ELAPSED_TIME}} seconds";

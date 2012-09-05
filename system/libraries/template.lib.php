@@ -34,7 +34,7 @@
 			$this->_header[$name] = $content;
 		}
 
-		public function write($view_path = null, $data = array(), $render_header = true, $tpl = null) {
+		public function write($view_path = null, $data = array(), $use_template = true, $tpl = null, $cache = true) {
 			/* Send the headers */
 				foreach($this->_header as $name => $content)
 					header("$name: $content");
@@ -65,15 +65,24 @@
 				}
 
 
-			/* Page templating */
-				if($content != null) {
-					if(!$tpl) $tpl = getConfigItem("site.default_template");
+			if($content != null) {
+				/* Cache result */
+					if($cache && getConfigItem("cache.level") == 1) {
+						load_class("cache", "core")->save_cached_file(
+							getConfigItem("site.request_url"),
+							$content
+						);
+					}
 
-					$_file = APP_TEMPLATE.$tpl.DS."index.php";
-					
-					if(file_exists($_file)) include $_file;
-				}
+				/* Page templating */
+					if($use_template) {
+						if(!$tpl) $tpl = getConfigItem("site.default_template");
 
+						$_file = APP_TEMPLATE.$tpl.DS."index.php";
+
+						if(file_exists($_file)) include $_file;
+					}
+			}
 		}
 
 		public function set_data($data = array() ) {
@@ -82,8 +91,11 @@
 			}
 		}
 
-		public function set_title($title) {
+		public function set_title($title, $no_default = false) {
 			$this->_page_title = $title;
+
+			$d_title = getConfigItem ("site.title");
+			if(!$no_default && !empty($d_title)) $this->_page_title .= " - ".$d_title;
 		}
 
 		protected function get_title() {

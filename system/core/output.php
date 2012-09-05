@@ -131,7 +131,7 @@
 		 * @param int	 $code
 		 * @param string $content
 		 */
-		public function setStatusHeader($code, $content = '') {
+		public function set_status_header($code, $content = '') {
 			/* Error checking and content setting */
 				if ($code == '' || !is_numeric($code))
 					show_error('Status code not numeric', 500);
@@ -149,7 +149,7 @@
 				header($server_protocol." $code $content", true, $code);
 		}
 
-		private function parse($content) {
+		public function parse($content) {
 			/* General setting of environment variables */
 				$this->_parse_array["ELAPSED_TIME"] = microtime() - SYSTEM_START;
 

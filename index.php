@@ -25,8 +25,7 @@
 
 
 	/* Start the whole thingy */
-		$app = new CodeFire();
-		$app->run();
+		run_codefire();
 
 
 ?>
