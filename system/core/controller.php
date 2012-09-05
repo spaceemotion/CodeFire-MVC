@@ -7,23 +7,23 @@
 	 * @version 1.0
 	 */
 	class CF_Controller {
-		protected $template;
-
-		protected $_render;
-		protected $_render_header = true;
+		/**
+		 * Used for dynamic loading of models and plugins
+		 *
+		 * @var \CF_Controller
+		 */
+		private static $_instance;
 
 
 		public function __construct() {
+			self::$_instance =& $this;
+
 			$this->load =& load_class('loader', 'core');
-			$this->template =& load_class("template");
+			$this->template =& load_class('template');
 		}
 
-		/**
-		 * Sends the render data to the template instance which
-		 * will render the site
-		 */
-		public function __destruct() {
-			if($this->_render) $this->template->render($this->_render_header);
+		public static function &get_instance() {
+			return self::$_instance;
 		}
 	}
 

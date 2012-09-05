@@ -12,122 +12,139 @@
 		protected $_page_title = "";
 
 		protected $_vars = array();
+		protected $_header = array();
 
 		protected $_js	 = array();
 		protected $_css	 = array();
 		protected $_meta = array();
 
+		protected static $_file_label = "{F}";
+		protected static $_code_label = "{C}";
+
 
 		public function __construct() {
-			$this->includeMeta("generator", "CodeFire ".CF_VERSION);
+			$this->include_meta("generator", "CodeFire ".CF_VERSION);
 		}
 
 		public function set($name, $value) {
 			$this->_vars[$name] = $value;
 		}
 
-		public function render($view_path = null, $render_header = true) {
-			/* Get all vars as class variables */
-				extract($this->_vars);
-
-			/* Page header */
-				if($render_header) {
-					$header_path = APP_TEMPLATE."header.php";
-
-					if(file_exists($header_path)) include $header_path;
-				}
-
-			/* Page content */
-				if (file_exists(APP_VIEW . $view_path. '.php')) include (APP_VIEW . $view_path. '.php');
-
-			/* Page footer */
-				if($render_header) {
-					$footer_path = APP_TEMPLATE."footer.php";
-
-					if(file_exists($footer_path)) include $footer_path;
-				}
+		public function set_header($name, $content) {
+			$this->_header[$name] = $content;
 		}
 
-		public function setData($data = array() ) {
+		public function write($view_path = null, $data = array(), $render_header = true, $tpl = null) {
+			/* Send the headers */
+				foreach($this->_header as $name => $content)
+					header("$name: $content");
+
+
+			/* Get all vars as class variables */
+				if(is_array($data) && count($data) > 0)
+					array_merge($this->_vars, $data);
+
+				if(count($this->_vars) > 0)
+					extract($this->_vars);
+
+
+			/* Page content using buffered output */
+				if($view_path != null) {
+					$content = null;
+
+					if (file_exists(APP_VIEW . $view_path. '.php')) {
+						ob_start();
+
+						include (APP_VIEW . $view_path. '.php');
+
+						$content = ob_get_contents();
+						ob_end_clean();
+					}
+				} else {
+					$content = $data;
+				}
+
+
+			/* Page templating */
+				if($content != null) {
+					if(!$tpl) $tpl = getConfigItem("site.default_template");
+
+					$_file = APP_TEMPLATE.$tpl.DS."index.php";
+					
+					if(file_exists($_file)) include $_file;
+				}
+
+		}
+
+		public function set_data($data = array() ) {
 			if(!empty($data)) {
 				foreach($data as $key => $var) $this->_vars[$key] = $var;
 			}
 		}
 
-		public function setTitle($title) {
+		public function set_title($title) {
 			$this->_page_title = $title;
 		}
 
-		public function includeMeta($name, $content) {
+		protected function get_title() {
+			$title = getConfigItem("site.title");
+			return $this->_page_title.(!empty($title) ? " - $title" : "");
+		}
+
+		public function include_meta($name, $content) {
 			$this->_meta[$name] = $content;
 		}
 
-		public function includeHeader($type, $file_path, $file = true) {
-			$type = "_$type";
-
-			array_push($this->$type, ($file ? "FILE:" : "CODE:").$this->_replace_paths($file_path));
+		public function include_code($type, $file_path, $file = true) {
+			array_push(
+				$this->${"_".$type},
+				$file ? self::$_file_label.$file_path : self::$_code_label.$file_path
+			);
 		}
 
-		protected function _replace_paths($file_path) {
-			foreach(array (
-				"template" => APP_TEMPLATE,
-				"root" => $GLOBALS["config"]["site"]["url"].DS
-			) as $key => $var) {
-				str_replace('{'.$key.'}', $var, $file_path);
+		protected function get_meta() {
+			$return = "";
+
+			if(!empty($this->_meta)) {
+				foreach($this->_meta as $name => $content)
+					$return .= "<meta name=\"$name\" content=\"$content\" />\n";
 			}
 
-			return $file_path;
+			return $return;
 		}
 
-		protected function getHeader() {
-			$header = "";
+		protected function get_css() {
+			$return = "";
 
-			/* Title tag */
-				$title = $GLOBALS["config"]["site"]["title"];
-				$header .= "<title>{$this->_page_title}".(!empty($title) ? " - $title" : "")."</title>\n";
-
-
-			/* Meta tags */
-				if(!empty($this->_meta)) {
-					$header .= "\n";
-
-					foreach($this->_meta as $name => $content)
-						$header .= "<meta name=\"$name\" content=\"$content\" />\n";
+			if(!empty($this->_css)) {
+				foreach($this->_css as $css) {
+					if(substr($css, 0, strlen(self::$_file_label)) == self::$_file_label)
+						$return .= '<link rel="stylesheet" type="text/css" href="'.ltrim($css, self::$_file_label)."\">\n";
+					else if(substr($css, 0, strlen(self::$_code_label)) == self::$_code_label)
+						$return .= '<style type="text/css">'.ltrim($css, self::$_code_label)."</style>\n";
+					else
+						$return .= "$css\n";
 				}
+			}
 
+			return $return;
+		}
 
-			/* CSS code */
-				if(!empty($this->_css)) {
-					$header .= "\n";
+		protected function get_javascript() {
+			$return = "";
 
-					foreach($this->_css as $css) {
-						if(substr($css, 0, strlen("FILE:")) == "FILE:")
-							$header .= '<link rel="stylesheet" type="text/css" href="'.ltrim($css, "FILE:")."\">\n";
-						else if(substr($css, 0, strlen("CODE:")) == "CODE:")
-							$header .= '<style type="text/css">'.ltrim($css, "CODE:")."</style>\n";
-						else
-							$header .= "$css\n";
-					}
+			if(!empty($this->_js)) {
+				foreach($this->_js as $js) {
+					if(substr($js, 0, strlen(self::$_file_label)) == self::$_file_label)
+						$return .= '<script type="text/javascript" src="'.ltrim($js, self::$_file_label)."\"></script>\n";
+					else if(substr($js, 0, strlen(self::$_code_label)) == self::$_code_label)
+						$return .= '<script type="text/javascript">'.ltrim($js, self::$_code_label)."</script>\n";
+					else
+						$return .= "$js\n";
 				}
+			}
 
-
-			/* JavaScript stuff */
-				if(!empty($this->_css)) {
-					$header .= "\n";
-
-					foreach($this->_js as $js) {
-						if(substr($js, 0, strlen("FILE:")) == "FILE:")
-							$header .= '<script type="text/javascript" src="'.ltrim($js, "FILE:")."\"></script>\n";
-						else if(substr($js, 0, strlen("CODE:")) == "CODE:")
-							$header .= '<script type="text/javascript">'.ltrim($js, "CODE:")."</script>\n";
-						else
-							$header .= "$js\n";
-					}
-				}
-
-
-			/* Return the generated header */
-				return $header;
+			return $return;
 		}
 
 	}

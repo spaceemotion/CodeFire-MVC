@@ -17,14 +17,21 @@
 		$config["site"]["production"] = false;
 		$config["site"]["time_zone"] = "UTC";
 		$config["site"]["title"] = "";
-		$config["site"]["url"] = "";
 		$config["site"]["userclass_prefix"] = "";
+
+		$config["site"]["enable_cache"] = true;
+
+		// Custom cache path, leave null for default
+		$config["site"]["cache_path"] = null;
+
+		$config["site"]["default_template"] = "default";
+
+		// If true an error page will be displayed when no output was sent
+		$config["site"]["nocontent404"] = true;
 
 
 	/* Routing */
-		$config["route"]["default_method"] = "index";
-		$config["route"]["default_controller"] = "demo";
-
+		$config["route"]["default_page"] = "demo/index";
 		$config["route"]["404_overwrite"] = "";
 
 
@@ -34,13 +41,11 @@
 		$config["autoload"]["plugins"]	= array();
 
 
-	/* Database connection */
-		$config["db"] = array(
-			"host"		=> "localhost",
-			"user"		=> "root",
-			"password"	=> "",
-			"name"		=> "catacombsnatch"
-		);
+	/* Default database connection details */
+		$config["db"]["host"] = "";
+		$config["db"]["user"] = "";
+		$config["db"]["password"] = "";
+		$config["db"]["name"] = "";
 
 
 ?>

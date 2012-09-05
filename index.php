@@ -10,7 +10,9 @@
 	 */
 
 
-	/* Define Directory Constants */
+	/* Basic Constant Defines */
+		define("SYSTEM_START", microtime());
+
 		define('DS',		DIRECTORY_SEPARATOR);
 		define("BASE_DIR",	dirname(__FILE__).DS);
 
