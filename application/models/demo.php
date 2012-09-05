@@ -6,7 +6,7 @@
 
 	class Demo_Model extends CF_Model {
 		public function display_demo() {
-			return "<h2>It's alive!</h2>";
+			return "Welcome to the <em>CodeFire</em> demo page. If you are seeing this, the system was installed and configured correctly!";
 		}
 	}
 ?>

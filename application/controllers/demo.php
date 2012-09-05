@@ -13,11 +13,11 @@
 		function index() {
 			$this->template->set_title("Demo site");
 
-			$data = "<h1>CodeFire Demo content</h1>";
-			$data .= $this->demo_model->display_demo();
-			$data .= "Page generated in {{ELAPSED_TIME}} seconds; ".  getConfigItem("site.request_url");
+			$data["title"] = "<em>CodeFire</em> Demo content";
+			$data["text"] = $this->demo_model->display_demo();
+			$data["footer"] = "Page generated in {{ELAPSED_TIME}} seconds - Requested site: ".  getConfigItem("site.request_url");
 
-			$this->template->write(null, $data);
+			$this->template->write("basic", $data);
 		}
 
 		function no_template($request = "") {
@@ -25,7 +25,7 @@
 			echo "<h1>Request demo</h1>";
 			echo $this->demo_model->display_demo();
 
-			echo "You requested $request<br />Page generated in {{ELAPSED_TIME}} seconds";
+			echo "<p>Additional request data: $request</p>Page generated in {{ELAPSED_TIME}} seconds";
 		}
 	}
 

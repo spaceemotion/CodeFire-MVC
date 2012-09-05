@@ -42,7 +42,7 @@
 
 			/* Get all vars as class variables */
 				if(is_array($data) && count($data) > 0)
-					array_merge($this->_vars, $data);
+					$this->_vars = array_merge($this->_vars, $data);
 
 				if(count($this->_vars) > 0)
 					extract($this->_vars);
