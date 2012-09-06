@@ -33,8 +33,8 @@
 		$config["cache"]["time"] = 0.1;
 
 		// Cache levels:
-		// 1: Save only sent data (template will be rerendered),
-		// 2: Complete site (complete output to the browser)
+		// 1: Save only generated data (template will be rerendered),
+		// 2: Cache complete site output to file
 		$config["cache"]["level"] = 1;
 
 
@@ -50,10 +50,11 @@
 
 
 	/* Default database connection details */
-		$config["db"]["host"] = "";
-		$config["db"]["user"] = "";
-		$config["db"]["password"] = "";
-		$config["db"]["name"] = "";
+		$config["db"]["default"]["host"] = "";
+		$config["db"]["default"]["port"] = 3306;
+		$config["db"]["default"]["user"] = "";
+		$config["db"]["default"]["password"] = "";
+		$config["db"]["default"]["name"] = "";
 
 
 ?>

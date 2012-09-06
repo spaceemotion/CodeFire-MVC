@@ -15,7 +15,8 @@
 
 			$data["title"] = "<em>CodeFire</em> Demo content";
 			$data["text"] = $this->demo_model->display_demo();
-			$data["footer"] = "Page generated in {{ELAPSED_TIME}} seconds - Requested site: ".  getConfigItem("site.request_url");
+			$data["footer"] = "Page generated in {{time_elapsed}} seconds using {{memory_usage}} - Requested site: ".  getConfigItem("site.request_url");
+			$data["sidebar"] = "";
 
 			$this->template->write("basic", $data);
 		}
@@ -25,7 +26,8 @@
 			echo "<h1>Request demo</h1>";
 			echo $this->demo_model->display_demo();
 
-			echo "<p>Additional request data: $request</p>Page generated in {{ELAPSED_TIME}} seconds";
+			echo "<p>Please mind that no templated output only can be cached if the cache level is set to <code>2</code></p>
+			<p>Additional request data: $request</p>Page generated in {{time_elapsed}} seconds using {{memory_usage}}";
 		}
 	}
 

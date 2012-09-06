@@ -33,6 +33,7 @@
 			$this->_helper_paths	= array(APP_HELPER, SYSTEM_HELPER);
 			$this->_model_paths		= array(APP_MODEL);
 			$this->_view_paths		= array(APP_VIEW);
+			$this->_module_paths	= array(APP_MODULE);
 
 			$this->_autoload();
 		}
@@ -58,7 +59,7 @@
 				}
 		}
 
-		public function model($model, $name = '') {
+		public function model($model, $name = null) {
 			/* Are we loading more than one model? */
 				if (is_array($model)) {
 					foreach ($model as $m)
@@ -77,7 +78,7 @@
 				}
 
 			/* Check if the model is already loaded */
-				if ($name == '') $name = $model."_model";
+				if (!$name) $name = $model."_model";
 
 				if (in_array($name, $this->_models, true)) return;
 
@@ -107,6 +108,10 @@
 				}
 
 			// TODO: throw an error in here
+		}
+
+		public function database() {
+			
 		}
 	}
 

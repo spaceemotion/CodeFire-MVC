@@ -68,14 +68,8 @@
 		public function read_cached_file($request_url) {
 			$file_path = $this->get_file_path($request_url);
 
-			if ($this->is_available($request_url)) {
-				ob_start();
-				readfile($file_path);
-				$out = ob_get_contents();
-				ob_end_clean();
-				
-				return $out;
-			}
+			if ($this->is_available($request_url))
+				return unserialize(file_get_contents($file_path));
 
 			return null;
 		}
@@ -90,7 +84,6 @@
 		 */
 		public function save_cached_file($request_url, $content) {
 			$file_path = $this->get_file_path($request_url);
-			$php_safe = "<?php if ( !defined('BASE_DIR') ) exit('No direct script access allowed'); ?>\n";
 
 			$handler = fopen($file_path, 'w+');
 
@@ -98,11 +91,14 @@
 				if (flock($handler, LOCK_EX)) {
 					ftruncate($handler, 0);
 
-					$output = $php_safe . preg_replace(
-						array('/\>[^\S ]+/s','/[^\S ]+\</s','/(\s)+/s'),
-						array('>','<','\\1'),
-						$content
-					);
+					if(!is_array($content["data"])) {
+						$content["data"] = $this->trim_whitespace($content["data"]);
+					} else {
+						foreach($content["data"] as &$d)
+							$d = $this->trim_whitespace($d);
+					}
+
+					$output = serialize($content);
 
 					fwrite($handler, $output);
 					fclose($handler);
@@ -140,6 +136,14 @@
 			$file_name = urlencode($request_url)."-".md5($request_url);
 
 			return  TEMP_CACHE.($append_level ? $this->_level."-" : '').$file_name.'.cache';
+		}
+
+		private function trim_whitespace($str) {
+			return preg_replace(
+				array('/\>[^\S ]+/s','/[^\S ]+\</s','/(\s)+/s'),
+				array('>','<','\\1'),
+				$str
+			);
 		}
 	}
 

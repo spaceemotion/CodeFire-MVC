@@ -42,18 +42,49 @@
 
 				if(!empty($cache)) {
 					$CF_output =& load_class("output", "core");
-					$CF_output->set_output($cache);
 
-					if($CF_cache->get_level() == 1) {
-						exit(load_class("template")->write(
-							null,
-							$CF_output->get_output(),
-							true,
-							null,
-							false
-						));
-					} else {
-						exit($CF_output->get_output());
+					switch($CF_cache->get_level()) {
+						case 1:
+							$CF_template =& load_class("template");
+
+							$CF_template->set_title($cache["title"]);
+
+							foreach($cache["header"] as $key => $val)
+								$CF_template->set_header($key, $val);
+
+							foreach($cache["meta"] as $key => $val)
+								$CF_template->set_meta($key, $val);
+
+							foreach($cache["css"] as $css) {
+								if(substr($css, 0, strlen($CF_template::$_file_label)) == $CF_template::$_file_label)
+									$CF_template->include_code("css", $css, true);
+								else if(substr($css, 0, strlen($CF_template::$_code_label)) == $CF_template::$_code_label)
+									$CF_template->include_code("css", $css, false);
+							}
+
+							foreach($cache["js"] as $js) {
+								if(substr($js, 0, strlen($CF_template::$_file_label)) == $CF_template::$_file_label)
+									$CF_template->include_code("js", $js, true);
+								else if(substr($js, 0, strlen($CF_template::$_code_label)) == $CF_template::$_code_label)
+									$CF_template->include_code("js", $js, false);
+							}
+
+							$CF_template->set_data($cache["vars"]);
+
+							ob_start();
+							$CF_template->write(
+								$cache["view"],
+								$cache["data"],
+								$cache["tpl"],
+								false);
+							$cache = ob_get_contents();
+							ob_end_clean();
+							
+						case 2:
+							exit($CF_output->set_output($cache)->get_output());
+
+						default:
+							break;
 					}
 				}
 			}
