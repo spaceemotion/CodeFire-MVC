@@ -94,18 +94,19 @@
 				foreach($data as $key => $var) $this->_vars[$key] = $var;
 		}
 
-		public function set_title($title, $no_default = false) {
+		public function set_title($title, $add_default = true) {
 			$this->_page_title = $title;
 
-			$d_title = getConfigItem ("site.title");
+			if($add_default) {
+				$d_title = getConfigItem("site.title");
 
-			if(!$no_default && !empty($d_title))
-				$this->_page_title .= " - ".$d_title;
+				if(!empty($d_title))
+					$this->_page_title .= " - ".$d_title;
+			}
 		}
 
 		protected function get_title() {
-			$title = getConfigItem("site.title");
-			return $this->_page_title.(!empty($title) ? " - $title" : "");
+			return $this->_page_title;
 		}
 
 		public function set_meta($name, $content) {

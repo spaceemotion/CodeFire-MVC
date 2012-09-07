@@ -10,13 +10,13 @@
 	 * @version	1.0
 	 */
 
-	global $config;
+	global $config, $db;
 
 
 	/* Site Configuration */
 		$config["site"]["production"] = false;
 		$config["site"]["time_zone"] = "UTC";
-		$config["site"]["title"] = "";
+		$config["site"]["title"] = "CodeFire";
 		$config["site"]["userclass_prefix"] = "";
 
 		$config["site"]["default_template"] = "default";
@@ -39,22 +39,22 @@
 
 
 	/* Routing */
-		$config["route"]["default_page"] = "demo/index";
+		$config["route"]["default_page"] = "demo";
 		$config["route"]["404_overwrite"] = "";
 
 
 	/* Autoloading of classes and files */
 		$config["autoload"]["model"]	= array();
 		$config["autoload"]["helper"]	= array();
-		$config["autoload"]["plugins"]	= array();
 
 
 	/* Default database connection details */
-		$config["db"]["default"]["host"] = "";
-		$config["db"]["default"]["port"] = 3306;
-		$config["db"]["default"]["user"] = "";
-		$config["db"]["default"]["password"] = "";
-		$config["db"]["default"]["name"] = "";
+		$db["default"]["type"] = "mysql";
+		$db["default"]["host"] = "localhost";
+		$db["default"]["port"] = 3306;
+		$db["default"]["user"] = "root";
+		$db["default"]["passwd"] = "";
+		$db["default"]["name"] = "";
 
 
 ?>

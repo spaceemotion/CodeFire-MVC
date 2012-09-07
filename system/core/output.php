@@ -151,7 +151,7 @@
 
 		public function parse($content) {
 			/* General setting of environment variables */
-				$this->_parse_array["time_elapsed"] = microtime() - SYSTEM_START;
+				$this->_parse_array["time_elapsed"] = substr(microtime_float() - $GLOBALS["config"]["SYSTEM_START"], 0, 8);
 				$this->_parse_array["memory_usage"] = round(memory_get_usage()/1024/1024, 2).'MB';
 
 			/* Replace loop */

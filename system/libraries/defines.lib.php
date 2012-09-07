@@ -23,7 +23,6 @@
 		define("SYSTEM_TEMPLATE",SYSTEM		 ."templates".DS);
 		define("SYSTEM_LIB",	 SYSTEM		 ."libraries".DS);
 		define("SYSTEM_HELPER",  SYSTEM_LIB	 ."helpers".DS);
-		define("SYSTEM_PLUGIN",  SYSTEM_LIB	 ."plugins".DS);
 
 
 	/* Application constants */
@@ -34,8 +33,7 @@
 		define("APP_TEMPLATE",	 APPLICATION ."templates".DS);
 		define("APP_MODULE",	 APPLICATION ."modules".DS);
 		define("APP_LIB",		 APPLICATION ."libraries".DS);
-		define("APP_PLUGIN",	 APP_LIB	 ."plugins".DS);
-		define("APP_HELPER",	 APP_LIB	 ."helper".DS);
+		define("APP_HELPER",	 APP_LIB	 ."helpers".DS);
 
 
 	/* Custom constants */

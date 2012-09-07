@@ -23,6 +23,14 @@
 				color: #333;
 			}
 
+			h2 {
+				padding-bottom: 3px;
+				margin: 2px 0 5px;
+				font-size: 14px;
+			}
+
+			p { margin: 5px 0; }
+
 			em { color: #900; }
 
 			small {

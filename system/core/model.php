@@ -10,7 +10,11 @@
 	 * @version 1.0
 	 */
 
-	class CF_Model {}
+	class CF_Model {
+		public function __construct() {
+			$this->load =& load_class('loader', 'core');
+		}
+	}
 
 
 ?>

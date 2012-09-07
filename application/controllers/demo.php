@@ -13,10 +13,17 @@
 		function index() {
 			$this->template->set_title("Demo site");
 
-			$data["title"] = "<em>CodeFire</em> Demo content";
-			$data["text"] = $this->demo_model->display_demo();
-			$data["footer"] = "Page generated in {{time_elapsed}} seconds using {{memory_usage}} - Requested site: ".  getConfigItem("site.request_url");
-			$data["sidebar"] = "";
+			$demo_module =& $this->load->module("demo");
+
+			$data = array(
+				"title"		=> "<em>CodeFire</em> Demo content",
+				"text"		=> $this->demo_model->display_demo()
+								."<p><strong>Database connection test:</strong> ".$this->demo_model->connect_to_database()."</p>"
+								."<p><strong>Character limitation demo:</strong>".$this->demo_model->display_character_limit()."</p>",
+				"sidebar"	=> $demo_module->render(),
+				"footer"	=> "Page generated in {{time_elapsed}} seconds using {{memory_usage}}"
+								. " - Requested site: ".  getConfigItem("site.request_url")
+			);
 
 			$this->template->write("basic", $data);
 		}

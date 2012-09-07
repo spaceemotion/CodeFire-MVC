@@ -99,6 +99,17 @@
 	}
 
 	/**
+	 * Loads a database using a given configuration name
+	 * The full configuration is placed in the config.php
+	 *
+	 * @param string $config
+	 * @return \CF_DB
+	 */
+	function load_database($config = 'default') {
+		is_loaded("db_".$config);
+	}
+
+	/**
 	 * Returns a configuration value based on the path. By default
 	 * the delimiter is '.'
 	 *
@@ -152,5 +163,16 @@
 		exit(load_class('Error', 'core')->display_error($title, $msg, 'general', $error_code));
 	}
 
+
+	/**
+	 * Sometimes microtime() can return negative values, which
+	 * is very contrapoductive when calculating the elapsed time
+	 *
+	 * @return float
+	 */
+	function microtime_float() {
+		list($usec, $sec) = explode(" ", microtime());
+		return ((float)$usec + (float)$sec);
+	}
 
 ?>

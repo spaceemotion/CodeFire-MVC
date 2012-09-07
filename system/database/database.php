@@ -17,13 +17,19 @@
 					break;
 
 				default:
-					throw new Exception("No valid driver support found!");
+					show_error("No valid driver support found (requested type: '$type')!");
 			}
 
 			if($port) $dsn .= ";port=$port";
 
-			parent::__construct($dsn, $user, $passwd);
+			try {
+				parent::__construct($dsn, $user, $passwd, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+
+			} catch(PDOException $e) {
+				show_error("Unable to connect to database! Please check your configuration.");
+			}
 		}
 	}
+
 
 ?>
